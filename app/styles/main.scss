@@ -95,4 +95,75 @@ body {
   width: 80%;
   height: 30px;
   margin-right: 10px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+}
+
+.modal {
+  position: relative;
+  margin: 120px auto;
+  max-width: 720px;
+  width: 30%;
+  height: 50%;
+  background: #ffffff;
+  text-align: center;
+  background-color: #e5e5e5;
+  border-radius: 6px;
+}
+
+.full-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 5;
+  background: rgba(57, 59, 62, 0.75);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.non-disposable {
+  display: none;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 5;
+  background: rgba(57, 59, 62, 0.75);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.btn--green {
+  border: solid 1px #fff;
+  background-color: green;
+  color: #fff !important;
+
+}
+
+.btn--red {
+  border: solid 1px #fff;
+  background-color: red;
+  color: #fff !important;
+
+}
+
+.domain-modal-title {
+  margin-bottom: 20px;
+}
+
+.ether-price {
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.sender-address-input {
+
 }
