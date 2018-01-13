@@ -56,12 +56,12 @@ body {
 
 /* Main marketing message and sign up button */
 .jumbotron {
-  text-align: center;
+
   border-bottom: 1px solid #e5e5e5;
 }
 .jumbotron .btn {
   padding: 14px 24px;
-  font-size: 21px;
+  font-size: 15px;
 }
 
 /* Supporting marketing content */
@@ -89,4 +89,10 @@ body {
   .jumbotron {
     border-bottom: 0;
   }
+}
+
+.url-input {
+  width: 80%;
+  height: 30px;
+  margin-right: 10px;
 }
