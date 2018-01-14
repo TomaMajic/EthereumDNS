@@ -36,7 +36,7 @@ $(document).on('click', '.submit-payment', () => {
 	console.log('Payment triggered');
 	var buyerAddress = $('buyer-address-input').val();
 	var recvAdress = '0x3d6E92c1D8B2af6bbC219a055c45e531759d6b3F'; // Prominit
-	var ethValue = 1; // Prominit
+	var ethValue = 0.005; // Prominit
 
 	var trxObject = createTrxObject(buyerAddress, recvAdress, ethValue);
 	console.log('Transaction object: ', trxObject);
@@ -44,11 +44,13 @@ $(document).on('click', '.submit-payment', () => {
 	web3.eth.sendTransaction(trxObject, (err, res) => {
 		if(err) {
 			console.log('Errorcina: ', err);
-		} else {
-			// var html = '<p>Success</p>';
+		} else { 
+			var img_src = './images/success.png'
+			var html = '<img src=' + img_src + ' height="175" width="175"></div>'
+						+ '<p>Uspješno izvršena transakcija</p>';
 
-			// $('.modal').fadeIn(200).empty();
-			// $('.modal').fadeIn(200).append(html);
+			$('.modal').fadeIn(200).empty();
+			$('.modal').fadeIn(200).append(html);
 			// setTimeout(() => {
 			// 	__Modals.modalShutdown();
 			// }), 5000);

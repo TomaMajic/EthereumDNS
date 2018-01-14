@@ -24,15 +24,44 @@ function switchToBuyTab() {
 
 function getBuyModalHtml() {
 	var title = $('.url-input').val();
-	// if title contains spaces stop executing method return some 'We're sorry' string
+	var html;
 
-	var html = '<h1 class="domain-modal-title">' + title + '</h1>' 
-				+ '<input type="text" name="ip-input" class="ip-input url-input" placeholder="IP adresa">'
-				+ '<input type="text" name="buyer-address-input" class="buyer-address-input url-input" placeholder="Unesite svoju javnu adresu">'
-				+ '<div class="ether-price">Price: 100 Eth</div>'
-				+ '<button class="submit-payment btn btn-lg btn-success">Plati</button>';
+	// if title contains spaces stop executing method return some 'We're sorry' string
+	if(!checkDomain(title)) {
+		var img_src = './images/error.png';
+
+		html = '<h1>Pogreška</h1>'
+				+ '<p>Nedozvoljeno ime domene ili domena nedostupna!</p>'
+				+ '<div class="error-img"><img src=' + img_src + ' height="175" width="175"></div>';
+	} else {
+		html = '<h1 class="domain-modal-title">' + title + '</h1>' 
+					+ '<input type="text" name="ip-input" class="ip-input url-input" placeholder="IP adresa">'
+					+ '<input type="text" name="buyer-address-input" class="buyer-address-input url-input" placeholder="Unesite svoju javnu adresu">'
+					+ '<div class="time-period">Choose period:   ' 
+							+ '<select>' 
+								+ '<option value="3">3 months</option>'
+								+ '<option value="6">6 months</option>'
+								+ '<option value="12">12 months</option>'
+							+ '</select>'
+						+ '</div>'
+					+ '<div class="ether-price">Price: 100 Eth</div>'
+					+ '<button class="submit-payment btn btn-lg btn-success">Plati</button>';
+
+	}
 
 	return html;
+}
+
+
+function checkDomain(domain_name) {
+	// Jel triba gledat ima li tocku? Ili dodajemo automatski .eth?
+	if((domain_name == '') || (/\s/.test(domain_name))) {
+		return false;
+	// } else if(available) {return false}
+
+	}
+
+	return true;
 }
 
 
