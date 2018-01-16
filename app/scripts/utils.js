@@ -64,7 +64,6 @@ function checkDomain(domain_name) {
 	return true;
 }
 
-
 function createTrxObject(from, to, value) {
 	var trxObject = {};
 
@@ -75,6 +74,14 @@ function createTrxObject(from, to, value) {
 	trxObject.value = valueInWei;
 
 	return trxObject;
+}
+
+function createContract(abi, contractAddress) {
+	var abiDefinition = JSON.parse(abi);
+	var contract = web3.eth.contract(abiDefinition);
+	var myContract = contract.at(contractAddress);
+
+	return myContract;
 }
 
 
