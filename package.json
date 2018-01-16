@@ -42,5 +42,8 @@
         "single"
       ]
     }
+  },
+  "dependencies": {
+    "truffle-hdwallet-provider": "0.0.3"
   }
 }
