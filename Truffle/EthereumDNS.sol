@@ -1,5 +1,13 @@
 pragma solidity ^0.4.0;
 contract EthereumDNS{
+    // Contract owner address
+    address contract_owner;
+    
+    // Constructor for storing contract owner address
+    function EthereumDNS(){
+        contract_owner = msg.sender;
+    }
+    
     // Define struct for reserving domain
     struct DNSRecord {
         // Ethereum address for owner of the domain
@@ -16,6 +24,10 @@ contract EthereumDNS{
     // List containing domains (string) and their owners
     mapping (string => DNSRecord) dns_records;
     
+    function updateCurrentPrice(uint newPrice) ifClient{
+        CurrentPrice = newPrice;
+    }
+    
     // Fail safe for hackers - check amount against our current price
     function calculateTimeForAmount(uint amount) private returns (uint256){
         // Calculate number of days (no decimals)
@@ -23,4 +35,13 @@ contract EthereumDNS{
         // Return number of seconds 
         return numberOfDays * 86400;
   }
+  
+  // Modifier for determening wether function caller is contract owner
+   modifier ifClient(){
+        if(msg.sender == contract_owner){
+            _;
+        }else{
+            throw;
+        }
+    }
 }
