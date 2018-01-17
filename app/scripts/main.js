@@ -30,7 +30,20 @@ $(document).on('click', '.home-tab', () => {
 	// 	}
 	// });
 
-	
+	var contractAbi = '';
+
+    var contractAddress = '0x8Ef749513F863B4C1760fBEDB4dCE7e61D82B9a9';
+
+    var dnsContract = createContract(contractAbi, contractAddress);
+
+    dnsContract.getCurrentPrice.call((err, res) => {
+  		if(err) {
+  			console.log('Error: ', err);
+  		} else {
+  			// Should return 1
+  			console.log(res.c[0]);
+  		}
+    });
 });
 
 $(document).on('click', '.buy-tab', () => {
