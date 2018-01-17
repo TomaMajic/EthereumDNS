@@ -13,36 +13,6 @@ $(document).ready(() => {
 
 $(document).on('click', '.home-tab', () => {
 	switchToHomeTab();
-
-	// // Testing deployed Test contract
-	// // Create a contract using it's abi and ropsten address 
-	// // Then call get num every time the home button is clicked to see if it returns 10
-	// var contractAddress = '0x911b43a63c99F8db28f9c4cB50Ee8C624e2E4501';
-	// var testContract = createContract('[{"constant": false,"inputs": [],"name": "getNum","outputs": [{"name": "","type": "uint256"}],"payable": false,"stateMutability": "nonpayable","type": "function"},{"inputs": [{"name": "initial","type": "uint256"}],"payable": false,"stateMutability": "nonpayable","type": "constructor"}]',
-	// 								contractAddress);
-
-	// testContract.getNum.call((err, res) => {
-	// 	if(err) {
-	// 		console.log('Error: ', err);
-	// 	} else {
-	// 		// Should return 10
-	// 		console.log(res.c[0]);
-	// 	}
-	// });
-
-	var contractAbi = '[{"constant": false,"inputs": [{"name": "domain","type": "string"}],"name": "deleteDomain","outputs": [],"payable": false,"stateMutability": "nonpayable","type": "function"},{"constant": true,"inputs": [{"name": "domain","type": "string"}],"name": "resolveDomain","outputs": [{"name": "","type": "string"}],"payable": false,"stateMutability": "view","type": "function"},{"constant": false,"inputs": [{"name": "domain","type": "string"},{"name": "ip_addr","type": "string"}],"name": "buyDomain","outputs": [],"payable": true,"stateMutability": "payable","type": "function"},{"constant": false,"inputs": [{"name": "newPrice","type": "uint256"}],"name": "updateCurrentPrice","outputs": [],"payable": false,"stateMutability": "nonpayable","type": "function"},{"constant": true,"inputs": [],"name": "getCurrentPrice","outputs": [{"name": "","type": "uint256"}],"payable": false,"stateMutability": "view","type": "function"},{"inputs": [],"payable": false,"stateMutability": "nonpayable","type": "constructor"}]';
-    var contractAddress = '0x8Ef749513F863B4C1760fBEDB4dCE7e61D82B9a9';
-
-    var dnsContract = createContract(contractAbi, contractAddress);
-
-    dnsContract.getCurrentPrice.call((err, res) => {
-  		if(err) {
-  			console.log('Error: ', err);
-  		} else {
-  			// Should return 1
-  			console.log(res.c[0]);
-  		}
-    });
 });
 
 $(document).on('click', '.buy-tab', () => {
@@ -50,40 +20,72 @@ $(document).on('click', '.buy-tab', () => {
 });
 
 $(document).on('click', '.buy-btn', () => {
-	var html = getBuyModalHtml();
+	var contractAbi = '[{"constant": false,"inputs": [{"name": "domain","type": "string"}],"name": "deleteDomain","outputs": [],"payable": false,"stateMutability": "nonpayable","type": "function"},{"constant": true,"inputs": [{"name": "domain","type": "string"}],"name": "resolveDomain","outputs": [{"name": "","type": "string"}],"payable": false,"stateMutability": "view","type": "function"},{"constant": false,"inputs": [{"name": "domain","type": "string"},{"name": "ip_addr","type": "string"}],"name": "buyDomain","outputs": [],"payable": true,"stateMutability": "payable","type": "function"},{"constant": false,"inputs": [{"name": "newPrice","type": "uint256"}],"name": "updateCurrentPrice","outputs": [],"payable": false,"stateMutability": "nonpayable","type": "function"},{"constant": true,"inputs": [],"name": "getCurrentPrice","outputs": [{"name": "","type": "uint256"}],"payable": false,"stateMutability": "view","type": "function"},{"inputs": [],"payable": false,"stateMutability": "nonpayable","type": "constructor"}]';
+    var contractAddress = '0x8Ef749513F863B4C1760fBEDB4dCE7e61D82B9a9';
+    var dnsContract = createContract(contractAbi, contractAddress);
 
-	__Modals.openModal();
-	$('.modal').fadeIn(200).append(html);
+    var priceInWei = 0;
+    dnsContract.getCurrentPrice.call((err, res) => {
+    	if(err) {
+    		console.log('Error: ', err);
+    	} else {
+    		priceInWei = res.c[0];
+    	}
+    }); 
+
+   	var html;
+   	setTimeout(() => {
+   		html = getBuyModalHtml(priceInWei)
+   		__Modals.openModal();
+   		$('.modal').fadeIn(200).append(html);
+   	}, 600);
 });
 
-$(document).on('click', '.full-overlay', function(e) {
+$(document).on('change', '.select-period', () => {
+	var selectedPeriod = $('.select-period').find(':selected').attr('value');
+	var pricePerDay = $('.ether-price').data('price');
+	var newPrice = pricePerDay * selectedPeriod * 30;
+
+	$('.ether-price').text('Price: ' + newPrice + ' wei');
+});
+
+
+$(document).on('click', '.full-overlay', (e) => {
 	if (e.currentTarget == e.target && !$('.signup-modal-active').length){
 		__Modals.modalShutdown();
 	}
 });
 
+
+$(document).on('click', '.resolve', () => {
+	var domain = $('.domain-resolve').text();
+
+	// dnsResolveDomain(domain);
+});
+
+
 $(document).on('click', '.submit-payment', () => {
-	console.log('Payment triggered');
 	var buyerAddress = $('buyer-address-input').val();
-	var recvAdress = '0x3d6E92c1D8B2af6bbC219a055c45e531759d6b3F'; // Prominit
-	var ethValue = 0.005; // Prominit
+	var recvAdress = '0x3d6E92c1D8B2af6bbC219a055c45e531759d6b3F';
+	var weiValue = $('.ether-price').text().split(' ')[1];
+	var ethValue = web3.fromWei(weiValue, 'ether');
 
 	var trxObject = createTrxObject(buyerAddress, recvAdress, ethValue);
 	console.log('Transaction object: ', trxObject);
-	
+
 	web3.eth.sendTransaction(trxObject, (err, res) => {
 		if(err) {
 			console.log('Errorcina: ', err);
 		} else { 
-			var img_src = './images/success.png'
-			var html = '<img src=' + img_src + ' height="175" width="175"></div>'
+			// dnsBuyDomain();
+
+			var imgSrc = './images/success.png'
+			var html = '<img src=' + imgSrc + ' height="175" width="175"></div>'
 						+ '<p>Uspješno izvršena transakcija</p>';
 
 			$('.modal').fadeIn(200).empty();
 			$('.modal').fadeIn(200).append(html);
-			// setTimeout(() => {
-			// 	__Modals.modalShutdown();
-			// }), 5000);
+
 			console.log('Transaction ' + res + ' generated');
 		}
 	});
