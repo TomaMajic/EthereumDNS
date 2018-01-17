@@ -10,6 +10,9 @@ contract EthereumDNS{
         uint end_timestamp;
     }
     
+    // Define current price for a year in wei
+    uint private CurrentPrice = 1;
+    
     // List containing domains (string) and their owners
     mapping (string => DNSRecord) dns_records;
 
