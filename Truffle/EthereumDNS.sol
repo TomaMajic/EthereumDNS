@@ -4,7 +4,7 @@ contract EthereumDNS{
     address contract_owner;
     
     // Constructor for storing contract owner address
-    function EthereumDNS(){
+    function EthereumDNS() public {
         contract_owner = msg.sender;
     }
     
@@ -16,6 +16,8 @@ contract EthereumDNS{
         string ip_addr;
         // Time remaining before record is not valid
         uint256 end_timestamp;
+        // true when DNSRecord exists
+        bool isDefined;
     }
     
     // Define current price for a day in wei
@@ -26,17 +28,44 @@ contract EthereumDNS{
     
     // Resolves IP address based on domain name
     function resolveDomain(string domain) public constant returns(string) {
-        // TODO: provjeri je li vrijeme isteklo - ako je nemoj resolvat
-        return dns_records[domain].ip_addr;
+        var dnsRecord = dns_records[domain];
+        if(dnsRecord.isDefined && dnsRecord.end_timestamp > now){
+            return dnsRecord.ip_addr;
+        }else{
+            // address does not exists or registration time was expired
+            throw;
+        }
+    }
+    
+    // Buy domain if domain name is not used
+    function buyDomain(string domain, string ip_addr) public payable {
+        if(dns_records[domain].isDefined && dns_records[domain].end_timestamp > now){
+            // address exists and registration time was nor expired
+            throw;
+        }
+        else{
+            var end_timestamp = calculateTimeForAmount(msg.value) + now;
+            dns_records[domain] = DNSRecord(msg.sender,ip_addr,end_timestamp,true);
+        }
+    }
+    
+    // Delete domain if you are an owner of the domain
+    function deleteDomain(string domain) public {
+        if(dns_records[domain].owner_addr == msg.sender){
+            dns_records[domain].isDefined = false;
+        }
+        else{
+            throw;
+        }
     }
     
     // Update current price if you are an owner of the contract
-    function updateCurrentPrice(uint newPrice) ifOwner{
+    function updateCurrentPrice(uint newPrice) public ifOwner{
         CurrentPrice = newPrice;
     }
     
     // Get current price for a day
-     function getCurrentPrice() constant returns(uint){
+     function getCurrentPrice() public constant returns(uint){
         return CurrentPrice;
     }
 
