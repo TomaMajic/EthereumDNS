@@ -24,6 +24,12 @@ contract EthereumDNS{
     // List containing domains (string) and their owners
     mapping (string => DNSRecord) dns_records;
     
+    // Resolves IP address based on domain name
+    function resolveDomain(string domain) public constant returns(string) {
+        // TODO: provjeri je li vrijeme isteklo - ako je nemoj resolvat
+        return dns_records[domain].ip_addr;
+    }
+    
     // Update current price if you are an owner of the contract
     function updateCurrentPrice(uint newPrice) ifOwner{
         CurrentPrice = newPrice;
@@ -51,3 +57,4 @@ contract EthereumDNS{
         }
     }
 }
+    
