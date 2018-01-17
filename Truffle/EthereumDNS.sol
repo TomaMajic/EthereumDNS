@@ -24,10 +24,16 @@ contract EthereumDNS{
     // List containing domains (string) and their owners
     mapping (string => DNSRecord) dns_records;
     
-    function updateCurrentPrice(uint newPrice) ifClient{
+    // Update current price if you are an owner of the contract
+    function updateCurrentPrice(uint newPrice) ifOwner{
         CurrentPrice = newPrice;
     }
     
+    // Get current price for a day
+     function getCurrentPrice() constant returns(uint){
+        return CurrentPrice;
+    }
+
     // Fail safe for hackers - check amount against our current price
     function calculateTimeForAmount(uint amount) private returns (uint256){
         // Calculate number of days (no decimals)
@@ -37,7 +43,7 @@ contract EthereumDNS{
   }
   
   // Modifier for determening wether function caller is contract owner
-   modifier ifClient(){
+   modifier ifOwner(){
         if(msg.sender == contract_owner){
             _;
         }else{
