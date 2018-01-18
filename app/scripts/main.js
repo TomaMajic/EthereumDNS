@@ -19,6 +19,10 @@ $(document).on('click', '.buy-tab', () => {
 	switchToBuyTab();
 });
 
+$(document).on('click', '.delete-tab', () => {
+	switchToDeleteTab();
+});
+
 $(document).on('click', '.buy-btn', () => {
 	var contractAbi = '[{"constant": false,"inputs": [{"name": "domain","type": "string"}],"name": "deleteDomain","outputs": [],"payable": false,"stateMutability": "nonpayable","type": "function"},{"constant": true,"inputs": [{"name": "domain","type": "string"}],"name": "resolveDomain","outputs": [{"name": "","type": "string"}],"payable": false,"stateMutability": "view","type": "function"},{"constant": false,"inputs": [{"name": "domain","type": "string"},{"name": "ip_addr","type": "string"}],"name": "buyDomain","outputs": [],"payable": true,"stateMutability": "payable","type": "function"},{"constant": false,"inputs": [{"name": "newPrice","type": "uint256"}],"name": "updateCurrentPrice","outputs": [],"payable": false,"stateMutability": "nonpayable","type": "function"},{"constant": true,"inputs": [],"name": "getCurrentPrice","outputs": [{"name": "","type": "uint256"}],"payable": false,"stateMutability": "view","type": "function"},{"inputs": [],"payable": false,"stateMutability": "nonpayable","type": "constructor"}]';
     var contractAddress = '0x8Ef749513F863B4C1760fBEDB4dCE7e61D82B9a9';
@@ -59,8 +63,37 @@ $(document).on('click', '.full-overlay', (e) => {
 
 $(document).on('click', '.resolve', () => {
 	var domain = $('.domain-resolve').val();
-	
+
 	dnsResolveDomain(domain);
+});
+
+
+$(document).on('click', '.delete-btn', () => {
+	var domain = $('.domain').val();
+
+	var html = '<div class="confirm-delete-modal" data-domain="' + domain + '">'
+			+ '<h3>Jeste li sigurni?</h3>'
+			+ '<p>Brisanje domene prije vremena koštat će vas x weia.</p>'
+			+ '<p> Za potvrdu unesite vašu javnu adresu: </p></br>'
+			+ '<input type="text" name="buyer-address-input" class="buyer-address-input url-input" placeholder="Javna adresa"></br></br>'
+			+ '<button class="confirm-delete btn--red btn btn-lg btn-success">Obriši</button>'
+			+ '</div>';
+
+	__Modals.openModal();
+	$('.modal').fadeIn(200).append(html);
+});
+
+
+$(document).on('click', '.confirm-delete', () => {
+	var domain = $('.confirm-delete-modal').data('domain');
+	var senderAddress = $('.buyer-address-input').val();
+
+	var trxObject = {
+		from: senderAddress,
+		gas: 4000000
+	}
+
+	dnsDeleteDomain(domain, trxObject);
 });
 
 

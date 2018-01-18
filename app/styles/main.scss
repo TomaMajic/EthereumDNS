@@ -152,7 +152,14 @@ body {
   border: solid 1px #fff;
   background-color: red;
   color: #fff !important;
+}
 
+.btn--red:hover {
+  background-color: red;
+}
+
+.btn--red:active {
+  background-color: red;
 }
 
 .domain-modal-title {
@@ -166,4 +173,8 @@ body {
 
 .error-img {
   margin-top: 30px;
+}
+
+.subtitle {
+  color: #777777;
 }

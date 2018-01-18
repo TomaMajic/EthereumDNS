@@ -1,23 +1,44 @@
 function switchToHomeTab() {
 	$('.jumbotron').empty();
+	$('.subtitle').empty();
 	$('.buy-tab').parent().removeClass('active');
+	$('.delete-tab').parent().removeClass('active');
 	$('.home-tab').parent().addClass('active');
 
 	var html = '<input type="text" name="url-input" class="url-input domain-resolve" placeholder="Unesite vašu domenu">'
 				+ '<a class="btn btn-lg btn-success resolve" href="#">Razluči</a>';
 
+	$('.subtitle').append('<h3>Razlučivanje domene: </h3>');
     $('.jumbotron').append(html);
 }
 
 
 function switchToBuyTab() {
 	$('.jumbotron').empty();
+	$('.subtitle').empty();
 	$('.home-tab').parent().removeClass('active');
+	$('.delete-tab').parent().removeClass('active');
 	$('.buy-tab').parent().addClass('active');
 
 	var html = '<input type="text" name="url-input" class="url-input domain" placeholder="Unesite željenu domenu">'
 				+ '<a class="btn btn-lg btn-success buy-btn" href="#">Kupi</a>';
 
+	$('.subtitle').append('<h3>Kupovina domene: </h3>');
+    $('.jumbotron').append(html);
+}
+
+
+function switchToDeleteTab() {
+	$('.jumbotron').empty();
+	$('.subtitle').empty();
+	$('.home-tab').parent().removeClass('active');
+	$('.buy-tab').parent().removeClass('active');
+	$('.delete-tab').parent().addClass('active');
+
+	var html = '<input type="text" name="url-input" class="url-input domain" placeholder="Unesite željenu domenu">'
+				+ '<a class="btn btn-lg btn-success delete-btn" href="#">Obriši</a>';
+
+	$('.subtitle').append('<h3>Brisanje domene: </h3>');
     $('.jumbotron').append(html);
 }
 
@@ -54,11 +75,8 @@ function getBuyModalHtml(priceInWei) {
 
 
 function checkDomain(domain_name) {
-	// Jel triba gledat ima li tocku? Ili dodajemo automatski .eth?
 	if((domain_name == '') || (/\s/.test(domain_name))) {
 		return false;
-	// } else if(available) {return false}
-
 	}
 
 	return true;
@@ -95,7 +113,7 @@ function dnsBuyDomain(trxObject) {
 
     var domain = $('.domain').val();
     var ipAddr = $('.ip-input').val();
-    console.log(domain + ' ' + ipAddr);
+
     dnsContract.buyDomain.sendTransaction(domain, ipAddr, trxObject, (err, res) => {
     	if(err) {
     		console.log('Error: ', err);
@@ -118,18 +136,35 @@ function dnsResolveDomain(domain) {
     var contractAddress = '0x8Ef749513F863B4C1760fBEDB4dCE7e61D82B9a9';
     var dnsContract = createContract(contractAbi, contractAddress);
 
-    // var trxObject = {
-    // 	from: web3.eth.coinbase,
-    // 	gas: 4000000
-    // }
-
     dnsContract.resolveDomain.call(domain, (err, res) => {
     	if(err) {
-    		console.log('Error: ', err);
+    		var imgSrc = './images/error.png';
+
+    		var html = '<h1>Pogreška</h1>'
+    				+ '<p>Tražena domena ne postoji!</p>'
+    				+ '<div class="error-img"><img src=' + imgSrc + ' height="175" width="175"></div>';
+
+    		__Modals.openModal();
+    		$('.modal').fadeIn(200).append(html);
     	} else {
-    		console.log(res);
+    		$('.domain-resolve').val(res);
     	}
     });
+}
+
+
+function dnsDeleteDomain(domain, trxObject) {
+	var contractAbi = '[{"constant": false,"inputs": [{"name": "domain","type": "string"}],"name": "deleteDomain","outputs": [],"payable": false,"stateMutability": "nonpayable","type": "function"},{"constant": true,"inputs": [{"name": "domain","type": "string"}],"name": "resolveDomain","outputs": [{"name": "","type": "string"}],"payable": false,"stateMutability": "view","type": "function"},{"constant": false,"inputs": [{"name": "domain","type": "string"},{"name": "ip_addr","type": "string"}],"name": "buyDomain","outputs": [],"payable": true,"stateMutability": "payable","type": "function"},{"constant": false,"inputs": [{"name": "newPrice","type": "uint256"}],"name": "updateCurrentPrice","outputs": [],"payable": false,"stateMutability": "nonpayable","type": "function"},{"constant": true,"inputs": [],"name": "getCurrentPrice","outputs": [{"name": "","type": "uint256"}],"payable": false,"stateMutability": "view","type": "function"},{"inputs": [],"payable": false,"stateMutability": "nonpayable","type": "constructor"}]';
+    var contractAddress = '0x8Ef749513F863B4C1760fBEDB4dCE7e61D82B9a9';
+    var dnsContract = createContract(contractAbi, contractAddress);
+
+    dnsContract.deleteDomain.sendTransaction(domain, trxObject, (err, res) => {
+    	if(err) {
+    		console.log(err);
+    	} else {
+    		__Modals.modalShutdown();
+    	}
+    }); 
 }
 
 
