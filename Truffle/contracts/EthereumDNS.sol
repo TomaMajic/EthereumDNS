@@ -52,7 +52,7 @@ contract EthereumDNS{
     
     // Delete domain if you are an owner of the domain
     function deleteDomain(string domain) public {
-        if(dns_records[domain].owner_addr == msg.sender){
+        if(dns_records[domain].owner_addr == msg.sender /* && dns_records[domain].isDefined == true  OVO FALI*/){
             dns_records[domain].isDefined = false;
         }
         else{
