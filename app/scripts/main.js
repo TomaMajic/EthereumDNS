@@ -58,35 +58,21 @@ $(document).on('click', '.full-overlay', (e) => {
 
 
 $(document).on('click', '.resolve', () => {
-	var domain = $('.domain-resolve').text();
-
-	// dnsResolveDomain(domain);
+	var domain = $('.domain-resolve').val();
+	
+	dnsResolveDomain(domain);
 });
 
 
 $(document).on('click', '.submit-payment', () => {
-	var buyerAddress = $('buyer-address-input').val();
+	var buyerAddress = $('.buyer-address-input').val();
 	var recvAdress = '0x3d6E92c1D8B2af6bbC219a055c45e531759d6b3F';
 	var weiValue = $('.ether-price').text().split(' ')[1];
 	var ethValue = web3.fromWei(weiValue, 'ether');
+	var gas = 4000000;
 
-	var trxObject = createTrxObject(buyerAddress, recvAdress, ethValue);
+	var trxObject = createTrxObject(buyerAddress, recvAdress, ethValue, gas);
 	console.log('Transaction object: ', trxObject);
 
-	web3.eth.sendTransaction(trxObject, (err, res) => {
-		if(err) {
-			console.log('Errorcina: ', err);
-		} else { 
-			// dnsBuyDomain();
-
-			var imgSrc = './images/success.png'
-			var html = '<img src=' + imgSrc + ' height="175" width="175"></div>'
-						+ '<p>Uspješno izvršena transakcija</p>';
-
-			$('.modal').fadeIn(200).empty();
-			$('.modal').fadeIn(200).append(html);
-
-			console.log('Transaction ' + res + ' generated');
-		}
-	});
+	dnsBuyDomain(trxObject);
 });
